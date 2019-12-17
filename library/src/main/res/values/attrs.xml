@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="loadFont" format="reference"/>
+
+    <declare-styleable name="EditTextEasyView">
+        <attr name="mask" format="string" />
+        <attr name="maskMoney" format="boolean" />
+        <attr name="regex" format="string" />
+        <attr name="emptyText" format="string" />
+        <attr name="messageGeneral" format="string" />
+        <attr name="messageEmpty" format="string" />
+
+        <attr name="loadFont" />
+
+        <attr name="empty" format="boolean" />
+        <attr name="trim" format="boolean" />
+
+        <attr name="validationType" format="enum">
+            <enum name="email" value="0" />
+            <enum name="documentId" value="1" />
+            <enum name="cnpj" value="2" />
+        </attr>
+
+    </declare-styleable>
+
+    <declare-styleable name="TextViewPlus">
+        <attr name="loadFont" />
+    </declare-styleable>
+</resources>
