@@ -1,6 +1,6 @@
 package br.com.robsonldo.myutils.preference
 
-import br.com.robsonldo.library.preference.interfaces.IPreferenceManager
+import br.com.robsonldo.myutils.preference.interfaces.IPreferenceManager
 import br.com.robsonldo.myutils.model.Setting
 import br.com.robsonldo.myutils.model.User
 

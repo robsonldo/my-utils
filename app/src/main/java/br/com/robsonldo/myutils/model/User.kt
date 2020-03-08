@@ -1,7 +1,7 @@
 package br.com.robsonldo.myutils.model
 
-import br.com.robsonldo.library.preference.PreferenceObject
-import br.com.robsonldo.library.preference.annotations.ObjectSharedPreference
+import br.com.robsonldo.myutils.preference.PreferenceObject
+import br.com.robsonldo.myutils.preference.annotations.ObjectSharedPreference
 
 @ObjectSharedPreference("my_user")
 class User : PreferenceObject() {

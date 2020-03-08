@@ -1,2 +1,2 @@
-include ':app', ':myutils'
+include ':app', ':library'
 rootProject.name='MyUtils'

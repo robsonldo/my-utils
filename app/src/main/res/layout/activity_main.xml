@@ -10,13 +10,13 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <br.com.robsonldo.library.view.TextViewPlus
+    <br.com.robsonldo.myutils.view.TextViewPlus
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
         android:textColor="@android:color/black" />
 
-    <br.com.robsonldo.library.view.EditTextEasyView
+    <br.com.robsonldo.myutils.view.EditTextEasyView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
@@ -26,7 +26,7 @@
         app:messageGeneral="Email invalid"
         app:validationType="email" />
 
-    <br.com.robsonldo.library.view.EditTextEasyView
+    <br.com.robsonldo.myutils.view.EditTextEasyView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"

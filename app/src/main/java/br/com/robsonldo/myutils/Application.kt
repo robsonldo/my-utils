@@ -2,8 +2,8 @@ package br.com.robsonldo.myutils
 
 import android.content.Context
 import androidx.multidex.MultiDexApplication
-import br.com.robsonldo.library.preference.PreferenceManager
-import br.com.robsonldo.library.view.ViewFontDefault
+import br.com.robsonldo.myutils.preference.PreferenceManager
+import br.com.robsonldo.myutils.view.ViewFontDefault
 import br.com.robsonldo.myutils.preference.MyPreference
 
 class Application : MultiDexApplication() {

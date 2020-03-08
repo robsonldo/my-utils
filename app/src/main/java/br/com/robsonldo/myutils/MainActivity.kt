@@ -2,10 +2,10 @@ package br.com.robsonldo.myutils
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import br.com.robsonldo.library.animation.enums.TransitionAnimation
-import br.com.robsonldo.library.preference.PreferenceManager
-import br.com.robsonldo.library.utils.UtilsActivity
-import br.com.robsonldo.library.view.EditTextEasyView
+import br.com.robsonldo.myutils.animation.enums.TransitionAnimation
+import br.com.robsonldo.myutils.preference.PreferenceManager
+import br.com.robsonldo.myutils.utils.UtilsActivity
+import br.com.robsonldo.myutils.view.EditTextEasyView
 import br.com.robsonldo.myutils.model.Setting
 import br.com.robsonldo.myutils.model.User
 import kotlinx.android.synthetic.main.activity_main.*
