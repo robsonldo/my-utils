@@ -179,6 +179,6 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
             super(itemView);
         }
 
-        public abstract View getForegroundSwipe();
+        public abstract View foregroundSwipe();
     }
 }
