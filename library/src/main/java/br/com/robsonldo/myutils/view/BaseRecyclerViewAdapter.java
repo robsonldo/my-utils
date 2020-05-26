@@ -155,8 +155,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
                 final ArrayList<T> newList = new ArrayList<>(count);
 
                 for (int i = 0; i < count; i++) {
-                    String filterableString = filtered.get(i).toString();
-                    if (filterableString.toLowerCase().contains(filterString)) {
+                    if (isFilteringCondition(filtered.get(i), filterString)) {
                         newList.add(filtered.get(i));
                     }
                 }
@@ -169,9 +168,13 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 objectsFilter = (ArrayList<T>) filterResults.values;
-                notifyDataSetChanged();
+                set(objectsFilter);
             }
         };
+    }
+
+    public Boolean isFilteringCondition(@Nullable T t, @NonNull String filter) {
+        return t != null && t.toString().toLowerCase().contains(filter);
     }
 
     public abstract class BaseRecyclerViewHolder extends RecyclerView.ViewHolder {
