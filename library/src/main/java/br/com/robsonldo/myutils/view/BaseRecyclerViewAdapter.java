@@ -20,18 +20,31 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
 
     public final static int RECYCLER_ORIENTATION_HORIZONTAL = 1;
     public final static int RECYCLER_ORIENTATION_VERTICAL = 2;
+    public final static int RECYCLER_ORIENTATION_GRID = 3;
 
-    private List<T> objectsFilter;
-    private List<T> objects;
+    protected List<T> objects;
+    protected List<T> objectsFull;
 
-    private OnBaseAdapterAction<T> onBaseAdapterAction;
+    protected OnBaseAdapterAction<T> onBaseAdapterAction;
 
-    public BaseRecyclerViewAdapter(@NonNull List<T> objectsFilter,
-                                   @NonNull OnBaseAdapterAction<T> onBaseAdapterAction) {
+    public BaseRecyclerViewAdapter() {
 
-        this.objectsFilter = objectsFilter;
-        this.objects = objectsFilter;
+    }
+
+    public BaseRecyclerViewAdapter(
+            @NonNull List<T> objects,
+            @NonNull OnBaseAdapterAction<T> onBaseAdapterAction
+    ) {
+        this.objects = objects;
+        setObjectsFull(this.objects);
         this.onBaseAdapterAction = onBaseAdapterAction;
+    }
+
+    protected void setObjectsFull(@NonNull List<T> objects) {
+        if(objectsFull != null) objectsFull.clear();
+        else objectsFull = new ArrayList<>();
+
+        objectsFull.addAll(objects);
     }
 
     @NonNull
@@ -48,25 +61,31 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     }
 
     public synchronized void set(List<T> objects) {
-        this.objectsFilter = objects;
+        this.objects = objects;
+        setObjectsFull(this.objects);
         notifyDataSetChanged();
 
         onVerifyEmpty();
     }
 
     public synchronized void add(@NonNull T t) {
-        if(this.objectsFilter == null) this.objectsFilter = new ArrayList<>();
+        if(objects == null) objects = new ArrayList<>();
 
-        this.objectsFilter.add(t);
-        notifyItemInserted(this.objectsFilter.size() - 1);
+        objects.add(t);
+        setObjectsFull(objects);
+        notifyItemInserted(objects.size() - 1);
         onVerifyEmpty();
     }
 
     public synchronized void addAll(@NonNull List<T> objects) {
-        if(this.objectsFilter == null) this.objectsFilter = new ArrayList<>();
+        if (objects.isEmpty()) return;
+        if(this.objects == null) this.objects = new ArrayList<>();
 
-        this.objectsFilter.addAll(objects);
-        notifyItemInserted(this.objectsFilter.size() - 1);
+        int start = this.objects.isEmpty() ? 0 : this.objects.size();
+
+        this.objects.addAll(objects);
+        setObjectsFull(this.objects);
+        notifyItemRangeInserted(start, objects.size());
         onVerifyEmpty();
     }
 
@@ -76,13 +95,15 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     }
 
     public void updateElement(int index) {
-        updateElement(index, objectsFilter.get(index));
+        updateElement(index, objects.get(index));
     }
 
     public synchronized void updateElement(int index, T object) {
         if (!validIndex(index)) return;
 
-        objectsFilter.set(index, object);
+        objects.set(index, object);
+        setObjectsFull(objects);
+
         notifyItemChanged(index);
     }
 
@@ -91,20 +112,42 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
         if (indexOf >= 0) removeElement(indexOf);
     }
 
+    public synchronized void removeElement(int... indexes) {
+        if (indexes.length == 0) return;
+
+        if (indexes.length == 1) {
+            removeElement(indexes[0]);
+            return;
+        }
+
+        int small = Integer.MAX_VALUE;
+
+        for (int index : indexes) {
+            if (small > index) small = index;
+            get().remove(index);
+        }
+
+        setObjectsFull(objects);
+        notifyItemRangeRemoved(small, indexes.length);
+        onVerifyEmpty();
+    }
+
     public synchronized void removeElement(int index) {
         if (!validIndex(index)) return;
 
-        objectsFilter.remove(index);
-        notifyItemRemoved(index);
-        notifyItemRangeChanged(index, objectsFilter.size());
+        objects.remove(index);
+        setObjectsFull(objects);
 
+        notifyItemRemoved(index);
+        notifyItemRangeChanged(index, objects.size());
         onVerifyEmpty();
     }
 
     public void clearAll() {
-        this.objectsFilter = new ArrayList<>();
-        notifyDataSetChanged();
+        this.objects.clear();
+        setObjectsFull(objects);
 
+        notifyDataSetChanged();
         onVerifyEmpty();
     }
 
@@ -113,13 +156,13 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     }
 
     private void onVerifyEmpty() {
-        if (onBaseAdapterAction != null) onBaseAdapterAction.onEmpty(objectsFilter.isEmpty());
+        if (onBaseAdapterAction != null) onBaseAdapterAction.onEmpty(objects.isEmpty());
     }
 
     @NonNull
     public List<T> get() {
-        if (objectsFilter == null) objectsFilter = new ArrayList<>();
-        return objectsFilter;
+        if (objects == null) objects = new ArrayList<>();
+        return objects;
     }
 
     @Nullable
@@ -134,7 +177,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
 
     @Override
     public int getItemCount() {
-        return objectsFilter != null ? objectsFilter.size() : 0;
+        return objects != null ? objects.size() : 0;
     }
 
     public OnBaseAdapterAction<T> getOnBaseAdapterAction() {
@@ -147,34 +190,36 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence item) {
-                String filterString = item.toString().toLowerCase();
-                FilterResults results = new FilterResults();
+                List<T> filteredList = new ArrayList<>();
 
-                final List<T> filtered = objects;
-                int count = filtered.size();
-                final ArrayList<T> newList = new ArrayList<>(count);
-
-                for (int i = 0; i < count; i++) {
-                    if (isFilteringCondition(filtered.get(i), filterString)) {
-                        newList.add(filtered.get(i));
+                if (item == null || item.length() == 0) {
+                    filteredList.addAll(objectsFull);
+                } else {
+                    for (T t : objectsFull) {
+                        if (isFilteringCondition(t, item.toString())) {
+                            filteredList.add(t);
+                        }
                     }
                 }
 
-                results.values = newList;
-                results.count = newList.size();
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                results.count = filteredList.size();
+
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                objectsFilter = (ArrayList<T>) filterResults.values;
-                set(objectsFilter);
+                objects.clear();
+                objects.addAll((ArrayList<T>) filterResults.values);
+                notifyDataSetChanged();
             }
         };
     }
 
     public Boolean isFilteringCondition(@Nullable T t, @NonNull String filter) {
-        return t != null && t.toString().toLowerCase().contains(filter);
+        return t != null && t.toString().toLowerCase().contains(filter.trim().toLowerCase());
     }
 
     public abstract class BaseRecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -182,6 +227,6 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
             super(itemView);
         }
 
-        public abstract View foregroundSwipe();
+        public abstract View getForegroundSwipe();
     }
 }
