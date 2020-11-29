@@ -40,7 +40,14 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
         this.onBaseAdapterAction = onBaseAdapterAction;
     }
 
-    protected void setObjectsFull(@NonNull List<T> objects) {
+    public void setObjects(@NonNull List<T> objects) {
+        if(this.objects != null) this.objects.clear();
+        else this.objects = new ArrayList<>();
+
+        this.objects.addAll(objects);
+    }
+
+    public void setObjectsFull(@NonNull List<T> objects) {
         if(objectsFull != null) objectsFull.clear();
         else objectsFull = new ArrayList<>();
 
