@@ -28,10 +28,10 @@ class PreferenceManager private constructor() {
         }
 
         fun init(context: Context, IPreferenceManager: IPreferenceManager<*>) {
-            this.context = context
-            this.iPreferenceManager = IPreferenceManager
+            Companion.context = context
+            iPreferenceManager = IPreferenceManager
 
-            preference = this.context.getSharedPreferences(IPreferenceManager.preferenceName(),
+            preference = Companion.context.getSharedPreferences(IPreferenceManager.preferenceName(),
                 Context.MODE_PRIVATE)
 
             getInstance().load()
@@ -50,9 +50,10 @@ class PreferenceManager private constructor() {
         }
     }
 
-    fun <T: PreferenceObject> getDefined(objectSharedPreference: ObjectSharedPreference,
-                                         clazz: Class<*>, obj: T? = null): T? {
-
+    fun <T : PreferenceObject> getDefined(
+        objectSharedPreference: ObjectSharedPreference,
+        clazz: Class<*>, obj: T? = null
+    ): T? {
         return get(objectSharedPreference.value, clazz) ?: obj
     }
 
@@ -60,11 +61,15 @@ class PreferenceManager private constructor() {
         return add(objectSharedPreference.value, obj)
     }
 
-    fun <T: PreferenceObject> remove(objectSharedPreference: ObjectSharedPreference,
-                                     clazz: Class<T>): Boolean {
-
-        return remove(objectSharedPreference.value, !objectSharedPreference.initialize,
-            clazz.newInstance())
+    fun <T : PreferenceObject> remove(
+        objectSharedPreference: ObjectSharedPreference,
+        clazz: Class<T>
+    ): Boolean {
+        return remove(
+            objectSharedPreference.value,
+            !objectSharedPreference.initialize,
+            clazz.newInstance()
+        )
     }
 
     private fun <T: PreferenceObject> add(key: String, obj: T): Boolean {
@@ -77,8 +82,10 @@ class PreferenceManager private constructor() {
         return editor.commit()
     }
 
-    private fun <T: PreferenceObject> remove(key: String, removeAttachObject: Boolean,
-                                             obj: T): Boolean {
+    private fun <T : PreferenceObject> remove(
+        key: String, removeAttachObject: Boolean,
+        obj: T
+    ): Boolean {
 
         val editor = preference.edit()
         editor.remove(key)

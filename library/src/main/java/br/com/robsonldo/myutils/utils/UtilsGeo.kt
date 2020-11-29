@@ -4,14 +4,17 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object UtilsGeo {
-    fun distanceBetweenTwoPointsUnitSystem(lat1: Double, lon1: Double, lat2: Double,
-                                           lon2: Double): Double {
-
+    fun distanceBetweenTwoPointsUnitSystem(
+        lat1: Double, lon1: Double, lat2: Double,
+        lon2: Double
+    ): Double {
         return distanceBetweenTwoPoints(lat1, lon1, lat2, lon2, 'K')
     }
 
-    fun distanceBetweenTwoPoints(lat1: Double, lon1: Double, lat2: Double, lon2: Double,
-                                 unit: Char): Double {
+    fun distanceBetweenTwoPoints(
+        lat1: Double, lon1: Double, lat2: Double, lon2: Double,
+        unit: Char
+    ): Double {
 
         val theta = lon1 - lon2
         var dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + (cos(deg2rad(lat1))

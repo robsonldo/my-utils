@@ -1,4 +1,4 @@
-package br.com.robsonldo.myutils
+package br.com.robsonldo.samplemyutils
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,8 +6,8 @@ import br.com.robsonldo.myutils.animation.enums.TransitionAnimation
 import br.com.robsonldo.myutils.preference.PreferenceManager
 import br.com.robsonldo.myutils.utils.UtilsActivity
 import br.com.robsonldo.myutils.view.EditTextEasyView
-import br.com.robsonldo.myutils.model.Setting
-import br.com.robsonldo.myutils.model.User
+import br.com.robsonldo.samplemyutils.model.Setting
+import br.com.robsonldo.samplemyutils.model.User
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,23 +20,19 @@ class MainActivity : AppCompatActivity() {
         var user: User? = PreferenceManager.getInstance().iSelf().user
         var setting: Setting? = PreferenceManager.getInstance().iSelf().setting
 
-        if (user == null) {
+        user?.removeLocal() ?: run {
             user = User().apply {
                 name = "Robson"
                 lastNate = "Oliveira"
                 saveLocal()
             }
-        } else {
-            user.removeLocal()
         }
 
-        if (setting == null) {
+        setting?.removeLocal() ?: run {
             setting = Setting().apply {
                 acceptNotification = true
                 saveLocal()
             }
-        } else {
-            setting.removeLocal()
         }
 
         enter.setOnClickListener {

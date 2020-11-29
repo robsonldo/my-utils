@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Rect
 import android.net.Uri
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -15,6 +14,7 @@ import android.util.Patterns
 import android.util.TypedValue
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.core.content.pm.PackageInfoCompat
 import org.apache.commons.lang3.text.WordUtils
 import java.io.*
 import java.util.*
@@ -118,37 +118,45 @@ object UtilsLdo {
     }
 
     @Throws(PackageManager.NameNotFoundException::class)
-    fun versionCode(context: Context): Int {
+    fun versionCode(context: Context): Long {
         val manager = context.packageManager
         val info = manager.getPackageInfo(context.packageName, 0)
-        return info.versionCode
+        return PackageInfoCompat.getLongVersionCode(info)
     }
 
     fun bitmapInFile(context: Context, bitmap: Bitmap): File? {
         var file: File? = File(context.filesDir.path, Date().time.toString() + ".jpg")
-        var fOut: OutputStream? = null
-        try {
-            fOut = BufferedOutputStream(FileOutputStream(file))
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
-            fOut.flush()
-            fOut.close()
-        } catch (e: Exception) {
-            file = null
+        val fOut: OutputStream?
+
+        file?.let {
+            try {
+                fOut = BufferedOutputStream(FileOutputStream(it))
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+                fOut.flush()
+                fOut.close()
+            } catch (e: Exception) {
+                file = null
+            }
         }
+
         return file
     }
 
     fun saveResizedImage(context: Context, image: Bitmap): File? {
         var resizedFile: File? = File(context.filesDir.path, Date().time.toString() + ".jpg")
-        var fOut: OutputStream? = null
-        try {
-            fOut = BufferedOutputStream(FileOutputStream(resizedFile))
-            image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
-            fOut.flush()
-            fOut.close()
-        } catch (e: Exception) {
-            resizedFile = null
+        val fOut: OutputStream?
+
+        resizedFile?.let {
+            try {
+                fOut = BufferedOutputStream(FileOutputStream(it))
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+                fOut.flush()
+                fOut.close()
+            } catch (e: Exception) {
+                resizedFile = null
+            }
         }
+
         return resizedFile
     }
 
@@ -192,21 +200,6 @@ object UtilsLdo {
                 && d1[Calendar.YEAR] == d2[Calendar.YEAR]
     }
 
-    private fun takeScreenShot(activity: Activity): Bitmap {
-        val view = activity.window.decorView
-        view.isDrawingCacheEnabled = true
-        view.buildDrawingCache()
-        val b1 = view.drawingCache
-        val frame = Rect()
-        activity.window.decorView.getWindowVisibleDisplayFrame(frame)
-        val statusBarHeight = frame.top
-        val width = activity.windowManager.defaultDisplay.width
-        val height = activity.windowManager.defaultDisplay.height
-        val b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight)
-        view.destroyDrawingCache()
-        return b
-    }
-
     fun validateColorHex(hex: String): String {
         if (!hex.matches(Regex("^#[0-9A-Fa-f]{1,8}$"))) return "#000000"
         else if (hex.length >= 7) return hex
@@ -236,8 +229,10 @@ object UtilsLdo {
     }
 
     fun dpToPx(context: Context, dp: Int): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
-            context.resources.displayMetrics)
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
+            context.resources.displayMetrics
+        )
     }
 
     fun pxToDp(context: Context, px: Float): Float {
@@ -251,7 +246,7 @@ object UtilsLdo {
 
     fun getDeviceMetrics(context: Context): DisplayMetrics? {
         val metrics = DisplayMetrics()
-        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager ?: return null
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = wm.defaultDisplay
         display.getMetrics(metrics)
         return metrics

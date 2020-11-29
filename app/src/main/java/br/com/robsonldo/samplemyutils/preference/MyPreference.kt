@@ -1,8 +1,8 @@
-package br.com.robsonldo.myutils.preference
+package br.com.robsonldo.samplemyutils.preference
 
 import br.com.robsonldo.myutils.preference.interfaces.IPreferenceManager
-import br.com.robsonldo.myutils.model.Setting
-import br.com.robsonldo.myutils.model.User
+import br.com.robsonldo.samplemyutils.model.Setting
+import br.com.robsonldo.samplemyutils.model.User
 
 class MyPreference : IPreferenceManager<MyPreference> {
 
