@@ -70,8 +70,8 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     public synchronized void set(List<T> objects) {
         this.objects = objects;
         setObjectsFull(this.objects);
-        notifyDataSetChanged();
 
+        notifyDataSetChanged();
         onVerifyEmpty();
     }
 
@@ -174,7 +174,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     }
     public int getIndexObjectFull(T t) { return getFull().indexOf(t); }
 
-    private void onVerifyEmpty() {
+    public void onVerifyEmpty() {
         if (onBaseAdapterAction != null) onBaseAdapterAction.onEmpty(objects.isEmpty());
     }
 
@@ -185,7 +185,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     }
 
     @NonNull
-    protected List<T> getFull() {
+    public List<T> getFull() {
         if (objectsFull == null) objectsFull = new ArrayList<>();
         return objectsFull;
     }
@@ -197,16 +197,16 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
     }
 
     @Nullable
-    protected T getFull(int index) {
+    public T getFull(int index) {
         if (!validIndexFull(index)) return null;
         return getFull().get(index);
     }
 
-    private boolean validIndex(int index) {
+    public boolean validIndex(int index) {
         return !get().isEmpty() && get().size() >= index + 1;
     }
 
-    private boolean validIndexFull(int index) {
+    public boolean validIndexFull(int index) {
         return !getFull().isEmpty() && getFull().size() >= index + 1;
     }
 
