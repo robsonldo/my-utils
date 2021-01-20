@@ -127,12 +127,13 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Re
             return;
         }
 
+        int countRemoved = 0;
         int small = Integer.MAX_VALUE;
 
         for (int index : indexes) {
             if (small > index) small = index;
 
-            T e = get().remove(index);
+            T e = get().remove(index - countRemoved++);
             if (e != null) removeElementFull(e);
         }
 
