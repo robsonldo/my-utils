@@ -22,11 +22,11 @@ import java.util.regex.Pattern
 
 object UtilsLdo {
 
+    @JvmStatic
     fun writeFileAppend(path: String, sBody: String): Boolean {
         return try {
             val gpxFile = File(path)
-            val bW: BufferedWriter
-            bW = BufferedWriter(FileWriter(gpxFile, true))
+            val bW = BufferedWriter(FileWriter(gpxFile, true))
             bW.write(sBody)
             bW.newLine()
             bW.flush()
@@ -37,10 +37,12 @@ object UtilsLdo {
         }
     }
 
+    @JvmStatic
     fun isValidEmail(email: String): Boolean {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
+    @JvmStatic
     fun concatenateWithDivisor(divisor: String, vararg args: Any): String {
         val concatenate = StringBuilder()
         for (i in args.indices) {
@@ -49,10 +51,12 @@ object UtilsLdo {
         return concatenate.toString()
     }
 
+    @JvmStatic
     fun separateWithDivisor(divisor: String, value: String): Array<String> {
         return value.split(Pattern.quote(divisor)).toTypedArray()
     }
 
+    @JvmStatic
     fun lastString(value: String, count: Int): String {
         val aux = StringBuilder("")
         var i = value.length - 1
@@ -65,6 +69,7 @@ object UtilsLdo {
         return aux.reverse().toString()
     }
 
+    @JvmStatic
     fun firstString(value: String, count: Int): String {
         val aux = StringBuilder()
         var i = 0
@@ -75,34 +80,46 @@ object UtilsLdo {
         return aux.toString()
     }
 
-    fun setTimeout(callback: Callback, time: Long) {
-        Thread(Runnable {
+    @JvmStatic
+    fun setTimeout(callback: UtilsLdo.Callback, time: Long): Thread {
+        val thread = Thread(Runnable {
             try {
                 Thread.sleep(time)
-                callback.success()
-            } catch (e: InterruptedException) {
+                if (!Thread.currentThread().isInterrupted) {
+                    callback.success()
+                }
+            } catch (e: Exception) {
                 callback.error(e)
             }
-        }).start()
+        })
+
+        thread.start()
+        return thread
     }
 
-    fun setInterval(callback: Callback, time: Long) {
-        Thread(Runnable {
+    @JvmStatic
+    fun setInterval(callback: Callback, time: Long): Thread {
+        val thread = Thread(Runnable {
             do {
                 try {
                     Thread.sleep(time)
-                } catch (e: InterruptedException) {
+                } catch (e: Exception) {
                     callback.error(e)
                     break
                 }
-            } while (callback.success())
-        }).start()
+            } while (!Thread.currentThread().isInterrupted && callback.success())
+        })
+
+        thread.start()
+        return thread
     }
 
+    @JvmStatic
     fun runBackground(process: Process) {
         Thread(Runnable { process.run() }).start()
     }
 
+    @JvmStatic
     fun runBackgroundUI(activity: Activity, process: Process) {
         Thread(Runnable {
             if (activity.isFinishing) return@Runnable
@@ -110,6 +127,7 @@ object UtilsLdo {
         }).start()
     }
 
+    @JvmStatic
     @Throws(PackageManager.NameNotFoundException::class)
     fun versionName(context: Context): String {
         val manager = context.packageManager
@@ -117,6 +135,7 @@ object UtilsLdo {
         return info.versionName
     }
 
+    @JvmStatic
     @Throws(PackageManager.NameNotFoundException::class)
     fun versionCode(context: Context): Long {
         val manager = context.packageManager
@@ -124,6 +143,7 @@ object UtilsLdo {
         return PackageInfoCompat.getLongVersionCode(info)
     }
 
+    @JvmStatic
     fun bitmapInFile(context: Context, bitmap: Bitmap): File? {
         var file: File? = File(context.filesDir.path, Date().time.toString() + ".jpg")
         val fOut: OutputStream?
@@ -142,6 +162,7 @@ object UtilsLdo {
         return file
     }
 
+    @JvmStatic
     fun saveResizedImage(context: Context, image: Bitmap): File? {
         var resizedFile: File? = File(context.filesDir.path, Date().time.toString() + ".jpg")
         val fOut: OutputStream?
@@ -160,6 +181,7 @@ object UtilsLdo {
         return resizedFile
     }
 
+    @JvmStatic
     fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
         var width = image.width
         var height = image.height
@@ -174,32 +196,39 @@ object UtilsLdo {
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
 
+    @JvmStatic
     fun getColorResourceInString(context: Context, r: Int): String {
         return "#" + Integer.toHexString(ContextCompat.getColor(context, r))
     }
 
+    @JvmStatic
     fun colorStateList(hex: String?): ColorStateList {
         return colorStateList(Color.parseColor(hex))
     }
 
+    @JvmStatic
     fun colorStateList(color: Int): ColorStateList {
         return ColorStateList(arrayOf(IntArray(0)), intArrayOf(color))
     }
 
+    @JvmStatic
     fun capitalizeFull(text: String?): String {
         return if (text == null) "" else WordUtils.capitalizeFully(text)
     }
 
+    @JvmStatic
     fun capitalize(text: String?): String {
         return if (text == null) "" else WordUtils.capitalize(text)
     }
 
+    @JvmStatic
     fun sameDay(d1: Calendar, d2: Calendar): Boolean {
         return d1[Calendar.DAY_OF_MONTH] == d2[Calendar.DAY_OF_MONTH]
                 && d1[Calendar.MONTH] == d2[Calendar.MONTH]
                 && d1[Calendar.YEAR] == d2[Calendar.YEAR]
     }
 
+    @JvmStatic
     fun validateColorHex(hex: String): String {
         if (!hex.matches(Regex("^#[0-9A-Fa-f]{1,8}$"))) return "#000000"
         else if (hex.length >= 7) return hex
@@ -210,6 +239,7 @@ object UtilsLdo {
         return hexBuilder.toString()
     }
 
+    @JvmStatic
     fun traceRoute(activity: Activity, lat: Double, lng: Double) {
         val gmmIntentUri = Uri.parse(String.format("google.navigation:q=%s,%s",
             lat.toString(), lng.toString()))
@@ -220,6 +250,7 @@ object UtilsLdo {
         activity.startActivity(mapIntent)
     }
 
+    @JvmStatic
     fun openUrlBrowser(activity: Activity, url: String?) {
         val intent = Intent()
         intent.action = Intent.ACTION_VIEW
@@ -228,6 +259,7 @@ object UtilsLdo {
         activity.startActivity(intent)
     }
 
+    @JvmStatic
     fun dpToPx(context: Context, dp: Int): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
@@ -235,23 +267,28 @@ object UtilsLdo {
         )
     }
 
+    @JvmStatic
     fun pxToDp(context: Context, px: Float): Float {
         return px / (context.resources.displayMetrics.densityDpi.toFloat()
                 / DisplayMetrics.DENSITY_DEFAULT)
     }
 
+    @JvmStatic
     fun rgbInHex(r: Int, g: Int, b: Int): String {
         return String.format("#%02x%02x%02x", r, g, b)
     }
 
+    @JvmStatic
     fun getDeviceMetrics(context: Context): DisplayMetrics? {
         val metrics = DisplayMetrics()
-        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val any = context.getSystemService(Context.WINDOW_SERVICE) ?: return null
+        val wm = any as WindowManager
         val display = wm.defaultDisplay
         display.getMetrics(metrics)
         return metrics
     }
 
+    @JvmStatic
     fun callPhone(activity: Activity, number: String) {
         val uri = String.format("tel:%s", number.trim { it <= ' ' })
         val intent = Intent(Intent.ACTION_DIAL)
@@ -259,6 +296,7 @@ object UtilsLdo {
         activity.startActivity(intent)
     }
 
+    @JvmStatic
     fun around10Down(number: Double): Double {
         return Math.floor(number * 100) / 100
     }
@@ -272,6 +310,7 @@ object UtilsLdo {
         fun error(e: Exception?)
     }
 
+    @JvmStatic
     fun calculateNoOfColumns(context: Context, dimension: Int): Int {
         val displayMetrics = context.resources.displayMetrics
         val dpWidth = displayMetrics.widthPixels / displayMetrics.density
