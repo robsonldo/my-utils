@@ -46,6 +46,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun validate(): Boolean {
-        return EditTextEasyView.validateChields(findViewById(R.id.root))
+        return EditTextEasyView.validateChields(root)
     }
 }

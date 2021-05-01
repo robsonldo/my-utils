@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.FontRes;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Locale;
@@ -24,7 +24,7 @@ import br.com.robsonldo.myutils.R;
 import br.com.robsonldo.myutils.view.watcher.Mask;
 import br.com.robsonldo.myutils.view.watcher.MaskMoney;
 
-public class EditTextEasyView extends AppCompatEditText {
+public class EditTextEasyView extends TextInputEditText {
 
     private static final String TAG = "EditTextEasyView";
 

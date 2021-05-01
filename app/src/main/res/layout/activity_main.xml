@@ -17,6 +17,7 @@
         android:textColor="@android:color/black" />
 
     <br.com.robsonldo.myutils.view.EditTextEasyView
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
@@ -27,6 +28,7 @@
         app:validationType="email" />
 
     <br.com.robsonldo.myutils.view.EditTextEasyView
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
